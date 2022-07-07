@@ -53,11 +53,13 @@ func postHeaders(w http.ResponseWriter, r *http.Request) {
 	bvalue, _ := strconv.Atoi(r.Header.Get("b"))
 
 	w.Header().Add("a+b", strconv.Itoa(avalue+bvalue))
+	w.WriteHeader(200)
 
 }
 func postData(w http.ResponseWriter, r *http.Request) {
 	data, _ := ioutil.ReadAll(r.Body)
 	json.NewEncoder(w).Encode("I got message:\n" + string(data))
+	w.WriteHeader(200)
 }
 
 //main /** starts program, gets HOST:PORT param and calls Start func.
