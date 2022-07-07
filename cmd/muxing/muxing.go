@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -21,10 +23,41 @@ main function reads host/port from env just for an example, flavor it following 
 func Start(host string, port int) {
 	router := mux.NewRouter()
 
+	router.HandleFunc("/name/{PARAM}", getParamName).Methods(http.MethodGet)
+	router.HandleFunc("/bad", getBad).Methods(http.MethodGet)
+	router.HandleFunc("/data", postData).Methods(http.MethodPost)
+	router.HandleFunc("/headers", postHeaders).Methods(http.MethodPost)
 	log.Println(fmt.Printf("Starting API server on %s:%d\n", host, port))
 	if err := http.ListenAndServe(fmt.Sprintf("%s:%d", host, port), router); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func getParamName(w http.ResponseWriter, r *http.Request) {
+
+	data := mux.Vars(r)
+	val := data["PARAM"]
+	w.WriteHeader(200)
+	json.NewEncoder(w).Encode("Hello," + val)
+
+}
+
+func getBad(w http.ResponseWriter, r *http.Request) {
+
+	w.WriteHeader(500)
+}
+
+func postHeaders(w http.ResponseWriter, r *http.Request) {
+
+	avalue, _ := strconv.Atoi(r.Header.Get("a"))
+	bvalue, _ := strconv.Atoi(r.Header.Get("b"))
+
+	w.Header().Add("a+b", strconv.Itoa(avalue+bvalue))
+
+}
+func postData(w http.ResponseWriter, r *http.Request) {
+	data, _ := ioutil.ReadAll(r.Body)
+	json.NewEncoder(w).Encode("I got message:\n" + string(data))
 }
 
 //main /** starts program, gets HOST:PORT param and calls Start func.
