@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -38,7 +37,7 @@ func getParamName(w http.ResponseWriter, r *http.Request) {
 	data := mux.Vars(r)
 	val := data["PARAM"]
 	w.WriteHeader(200)
-	json.NewEncoder(w).Encode("Hello, " + val + "!")
+	fmt.Fprintf(w, "Hello, %s!", val)
 
 }
 
@@ -58,7 +57,7 @@ func postHeaders(w http.ResponseWriter, r *http.Request) {
 }
 func postData(w http.ResponseWriter, r *http.Request) {
 	data, _ := ioutil.ReadAll(r.Body)
-	json.NewEncoder(w).Encode("I got message:\n" + string(data))
+	fmt.Fprintf(w, "I got message:\n%s", string(data))
 	w.WriteHeader(200)
 }
 
