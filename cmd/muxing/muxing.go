@@ -38,7 +38,7 @@ func getParamName(w http.ResponseWriter, r *http.Request) {
 	data := mux.Vars(r)
 	val := data["PARAM"]
 	w.WriteHeader(200)
-	json.NewEncoder(w).Encode("Hello," + val)
+	json.NewEncoder(w).Encode("Hello, " + val + "!")
 
 }
 
